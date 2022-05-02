@@ -141,5 +141,4 @@ def reconstructshortshare(combined_files,minimum_shares):
     decrypt(file3,file2,res)
     return file3
 
-combined_files = shortshare("test.txt",2,3)
-reconstructshortshare(combined_files,2)
+
