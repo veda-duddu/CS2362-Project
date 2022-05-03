@@ -27,8 +27,9 @@ def decrypt(filename1,filename2,key):
     with open(filename1, "wb") as file:
         file.write(decrypted_data)
 #secret sharing functions
+#random generator function
 random_generator = functools.partial(random.SystemRandom().randint, 0)
-
+#function to generate shares. returning shares in the tuple
 def make_random_shares(secret, minimum_shares, no_shares, prime=prime):
     if minimum_shares > no_shares:
         print("can't reconstruct the shares umm")
@@ -45,7 +46,7 @@ def make_random_shares(secret, minimum_shares, no_shares, prime=prime):
             accumalator = accumalator % prime
         shares.append([i,accumalator])
     return shares
-
+#lagrange interpolation for polynomials in the Z_p world
 def lagrange_interpolation(j, x_shares, y_shares, prime):
     def product(values):  
         counter = 1
@@ -74,7 +75,7 @@ def lagrange_interpolation(j, x_shares, y_shares, prime):
     numerator_sum = sum([division_modulus(numerator[i] * denominator_product * y_shares[i] % prime, denominator[i], prime)
                for i in range(len(x_shares))])
     return (division_modulus(numerator_sum, denominator_product, prime) + prime) % prime
-
+#recover secrets
 def recover_secret(x_shares,y_shares,minimum_shares, prime=prime):
     if len(x_shares) < minimum_shares:
         print("Wrong number of shares, rerun the program")
@@ -82,7 +83,7 @@ def recover_secret(x_shares,y_shares,minimum_shares, prime=prime):
     return lagrange_interpolation(0, x_shares, y_shares, prime)
 
 
-#generate shares
+#generate shares containing both fragment of key and file
 def shortshare(file,minimum_shares,no_shares):
     key = Fernet.generate_key()
     file1 = "encrypted.txt"
@@ -103,6 +104,7 @@ def shortshare(file,minimum_shares,no_shares):
     combined_files = combinefile(shares,fragments)
     return combined_files
 
+#reconstruct using the shares
 def reconstructshortshare(combined_files,minimum_shares):
     if len(combined_files)<minimum_shares:
         print("Incorrect number of shares given")
