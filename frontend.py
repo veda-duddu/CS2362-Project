@@ -1,3 +1,7 @@
+#note: need to run this in command prompt with the line: streamlit run frontend.py 
+#The server will show an error but that is because the default value of the threshold shares and no of shares being 0
+#Also edit the os.path.join to choose where one is reading the file
+#currently hosted on a local server
 import streamlit as st
 import os
 import filecmp
