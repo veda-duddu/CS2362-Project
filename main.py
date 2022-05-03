@@ -69,11 +69,19 @@ def lagrange_interpolation(j, x_shares, y_shares, prime):
     for i in range(len(x_shares)):
         x_list = list(x_shares)
         current = x_list.pop(i)
-        numerator.append(product(j - x for x in x_list))
-        denominator.append(product(current - x for x in x_list))
+        numerator_product =[]
+        denominator_product = []
+        for x in x_list:
+            numerator_product.append(j-x)
+        numerator.append(product(numerator_product))
+        for x in x_list:
+            denominator_product.append(current - x)
+        denominator.append(product(denominator_product))
     denominator_product = product(denominator)
-    numerator_sum = sum([division_modulus(numerator[i] * denominator_product * y_shares[i] % prime, denominator[i], prime)
-               for i in range(len(x_shares))])
+    div_mod = []
+    for i in range(len(x_shares)):
+        div_mod.append(division_modulus(numerator[i] * denominator_product * y_shares[i] % prime, denominator[i], prime))
+    numerator_sum = sum(div_mod)
     return (division_modulus(numerator_sum, denominator_product, prime) + prime) % prime
 #recover secrets
 def recover_secret(x_shares,y_shares,minimum_shares, prime=prime):
@@ -142,5 +150,3 @@ def reconstructshortshare(combined_files,minimum_shares):
     file3 = "decrypted.txt"
     decrypt(file3,file2,res)
     return file3
-
-
